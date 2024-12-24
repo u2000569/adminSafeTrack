@@ -2,15 +2,18 @@ import 'package:adminpickready/data/repositories/authentication/authentication_r
 import 'package:adminpickready/data/repositories/user/user_repository.dart';
 import 'package:adminpickready/features/personalization/models/user_model.dart';
 import 'package:adminpickready/utils/constants/enums.dart';
+import 'package:adminpickready/utils/logging/logger.dart';
 import 'package:adminpickready/utils/popups/loaders.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../data/repositories/parent/parent_repository.dart';
+import '../../../../routes/routes.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../../utils/helpers/network_manager.dart';
 import '../../../../utils/popups/full_screen_loader.dart';
+import '../../../authentication/controllers/login_contoller.dart';
 
 class AddParentController extends GetxController {
   static AddParentController get instance => Get.find();
@@ -31,6 +34,10 @@ class AddParentController extends GetxController {
   Future<void> addParent() async{
     try{
       showProgressDialog();
+      final loginController = LoginController.instance;
+      final adminEmail = loginController.localStorage.read('REMEMBER_ME_EMAIL');
+      final adminPassword = loginController.localStorage.read('REMEMBER_ME_PASSWORD');
+      SLoggerHelper.info('Admin Credentials: $adminEmail, $adminPassword');
 
       // Check Internet Connectivity
       final isConnected = await NetworkManager.instance.isConnected();
@@ -64,9 +71,15 @@ class AddParentController extends GetxController {
           role: AppRole.parent
           )
       );
+
+      //logout the new user
+      await AuthenticationRepository.instance.logoutAdmin();
+
+      await AuthenticationRepository.instance.loginWithEmailAndPassword(adminEmail, adminPassword);
       SFullScreenLoader.stopLoading();
+      // SLoggerHelper.info('User created with UID: ${userRepository.createUser(UserModel(email: email))}');
       // Redirect 
-      AuthenticationRepository.instance.screenRedirect();
+      Get.offAllNamed(SRoutes.dashboard);
     } catch (e){
       SFullScreenLoader.stopLoading();
       SLoaders.errorSnackBar(title: 'Oh snap, Fail to create parent account', message: e.toString());

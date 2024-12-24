@@ -37,7 +37,7 @@ class AuthenticationRepository extends GetxController {
     if (user != null) {
       // Navigate to the Home
       Get.offAllNamed(SRoutes.dashboard);
-      SLoggerHelper.info('User Log In');
+      SLoggerHelper.info('User Log In: ${user.email}');
     } else {
       Get.offAllNamed(SRoutes.login);
       SLoggerHelper.info('No User Log In');
@@ -91,6 +91,27 @@ Future<UserCredential> loginWithEmailAndPassword(String email, String password) 
     try {
       await FirebaseAuth.instance.signOut();
       Get.offAllNamed(SRoutes.login);
+    } on FirebaseAuthException catch (e) {
+      if (kDebugMode) print(e);
+      throw SFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      if (kDebugMode) print(e);
+      throw SFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      if (kDebugMode) print('Format Exception Caught');
+      throw const SFormatException();
+    } on PlatformException catch (e) {
+      if (kDebugMode) print(e);
+      throw SPlatformException(e.code).message;
+    } catch (e) {
+      if (kDebugMode) print(e);
+      throw 'Something went wrong. Please try again';
+    }
+  }
+
+  Future<void> logoutAdmin() async {
+    try {
+      await FirebaseAuth.instance.signOut();
     } on FirebaseAuthException catch (e) {
       if (kDebugMode) print(e);
       throw SFirebaseAuthException(e.code).message;

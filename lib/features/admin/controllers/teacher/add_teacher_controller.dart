@@ -11,6 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../data/repositories/user/user_repository.dart';
+import '../../../../routes/routes.dart';
+import '../../../../utils/logging/logger.dart';
+import '../../../authentication/controllers/login_contoller.dart';
 
 class AddTeacherController extends GetxController {
   // Singleton instance
@@ -37,6 +40,11 @@ class AddTeacherController extends GetxController {
     try {
       // show progress dialog
       showProgressDialog();
+
+      final loginController = LoginController.instance;
+      final adminEmail = loginController.localStorage.read('REMEMBER_ME_EMAIL');
+      final adminPassword = loginController.localStorage.read('REMEMBER_ME_PASSWORD');
+      SLoggerHelper.info('Admin Credentials: $adminEmail, $adminPassword');
 
       // Check Internet Connectivity
       final isConnected = await NetworkManager.instance.isConnected();
@@ -87,9 +95,13 @@ class AddTeacherController extends GetxController {
           )
       );
 
+      await AuthenticationRepository.instance.logoutAdmin();
+
+      await AuthenticationRepository.instance.loginWithEmailAndPassword(adminEmail, adminPassword);
+
       SFullScreenLoader.stopLoading();
       // Redirect
-      AuthenticationRepository.instance.screenRedirect();
+      Get.offAllNamed(SRoutes.dashboard);
     } catch (e) {
       SFullScreenLoader.stopLoading();
       SLoaders.errorSnackBar(title: 'Oh Snap, cannot create Teacher Account', message: e.toString());
