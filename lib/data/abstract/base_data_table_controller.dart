@@ -158,6 +158,45 @@ abstract class SBaseController<T> extends GetxController{
     }
   }
 
+  Future<void> confirmAndDeleteGrade(T item) async {
+    try {
+      // Cast the item to the expected type, e.g., UserModel or TeacherModel
+    final userItem = item as dynamic; // Replace 'dynamic' with your actual model type if possible
+    SLoggerHelper.debug('User Item: $userItem');
+
+      // Show a confirmation dialog
+      Get.defaultDialog(
+        title: 'Delete Account',
+        content: const Text('Are you sure you want to delete this class?  '),
+        confirm: SizedBox(
+          width: 60,
+          child: ElevatedButton(
+            onPressed: () async => await deleteOnConfirm(item),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: SSizes.buttonHeight / 2),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(SSizes.buttonRadius * 5)),
+            ),
+            child: const Text('Confirm'),
+          ),
+        ),
+        cancel: SizedBox(
+          width: 80,
+          child: OutlinedButton(
+            onPressed: () => Get.back(),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: SSizes.buttonHeight / 2),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(SSizes.buttonRadius * 5)),
+            ),
+            child: const Text('Cancel'),
+          ),
+        ),
+      );
+    } catch (e) {
+      // Handle error (to be implemented in subclasses)
+      SLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+    }
+  }
+
   /// Method to be implemented by subclasses for handling confirmation before deleting an item.
   Future<void> deleteOnConfirm(T item) async {
     try {

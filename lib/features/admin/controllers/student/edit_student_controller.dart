@@ -1,8 +1,10 @@
 import 'package:adminpickready/data/repositories/student/student_repository.dart';
+import 'package:adminpickready/features/admin/controllers/student/student_controller.dart';
 import 'package:adminpickready/features/admin/controllers/student/student_images_controller.dart';
 import 'package:adminpickready/features/admin/models/grade_model.dart';
 import 'package:adminpickready/features/admin/models/student_model.dart';
 import 'package:adminpickready/features/personalization/models/user_model.dart';
+import 'package:adminpickready/utils/logging/logger.dart';
 import 'package:adminpickready/utils/popups/loaders.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -35,6 +37,9 @@ class EditStudentController extends GetxController {
   final Rx<GradeModel?> selectedGrade = Rx<GradeModel?>(null);
   final Rx<UserModel?> selectedParent = Rx<UserModel?>(null);
 
+  // reactive variables
+  final RxList<StudentModel> studentList = <StudentModel>[].obs;
+
   // Flags for tracking different tasks
   RxBool thumbnailUploader = true.obs;
   RxBool studentDataUploader = false.obs;
@@ -42,12 +47,14 @@ class EditStudentController extends GetxController {
   // Initialized Student Data
   void initStudentData(StudentModel student){
     try {
+      SLoggerHelper.info('Initializing Student Data');
       isLoading.value = true;
 
       // basic info
       studentName.text = student.name;
       studentID.text = student.id;
       selectedParent.value = student.parent;
+      parentTextField.text = student.parent?.fullName ?? '';
       // Student Grade
       selectedGrade.value = student.grade;
       gradeTextField.text = student.grade?.name ?? '';
@@ -66,6 +73,7 @@ class EditStudentController extends GetxController {
   Future<void> editStudent(StudentModel student) async{
     try {
       showProgressDialog();
+      SLoggerHelper.info('Editing Student Data: ${student.toJson()}');
 
       // Check Internet Connectivity
       final isConnected = await NetworkManager.instance.isConnected();
@@ -75,10 +83,10 @@ class EditStudentController extends GetxController {
       }
 
       // Validate student and description form
-      if (!studentDescriptionFormKey.currentState!.validate()) {
-        SFullScreenLoader.stopLoading();
-        return;
-      }
+      // if (!studentDescriptionFormKey.currentState!.validate()) {
+      //   SFullScreenLoader.stopLoading();
+      //   return;
+      // }
 
       // Ensure a grade is selected
       if(selectedGrade.value == null) throw 'Select Grade for the Student';
@@ -98,7 +106,11 @@ class EditStudentController extends GetxController {
 
       // Call repository to update student data
       studentDataUploader.value = true;
-      await StudentRepository.instance.updateStudent(student);
+      SLoggerHelper.info('Editing Student Data: ${student.toJson()}');
+      await studentRepository.updateStudent(student);
+
+      //update student list
+      StudentController.instance.updateStudentInList(student);
 
       SFullScreenLoader.stopLoading();
 
@@ -107,6 +119,7 @@ class EditStudentController extends GetxController {
     } catch (e) {
       SFullScreenLoader.stopLoading();
       SLoaders.errorSnackBar(title: 'Oh snap, Fail to update student data', message: e.toString());
+      SLoggerHelper.error('Failed to update student data: $e');
     }
   }
 

@@ -1,12 +1,11 @@
 import 'package:adminpickready/common/widgets/breadcrumbs/breadcrumb_with_heading.dart';
 import 'package:adminpickready/common/widgets/containers/rounded_container.dart';
+import 'package:adminpickready/features/admin/screens/student/add_student/widgets/add_parent_widget.dart';
 import 'package:adminpickready/routes/routes.dart';
 import 'package:adminpickready/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../../controllers/student/student_images_controller.dart';
-import '../../edit_student/widgets/edit_parent_widget.dart';
 import '../widgets/bottom_navigation_widget.dart';
 import '../widgets/grade_widget.dart';
 import '../widgets/student_description.dart';
@@ -44,7 +43,7 @@ class AddStudentDesktopScreen extends StatelessWidget {
                         // Basic Info
                         StudentNameAndDescription(),
                         SizedBox(height: SSizes.spaceBtwSections / 2),
-                        StudentParent(),
+                        AddStudentParent(),
                         SizedBox(height: SSizes.spaceBtwSections / 2),
                         // Student Grade same as ProductBrand
                         StudentGrade(),

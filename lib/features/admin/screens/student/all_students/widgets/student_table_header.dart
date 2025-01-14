@@ -30,7 +30,7 @@ class StudentTableHeader extends StatelessWidget {
           child: TextFormField(
             controller: controller.searchTextController,
             onChanged: (query) => controller.searchQuery(query),
-            decoration: const InputDecoration(hintText: 'Search Student', prefixIcon: Icon(Iconsax.search_normal2)),
+            decoration: const InputDecoration(hintText: 'Search Student ID', prefixIcon: Icon(Iconsax.search_normal2)),
           )
         )
       ],

@@ -54,7 +54,8 @@ class EditStudentGrade extends StatelessWidget {
                     controller.selectedGrade.value = suggestion;
                   }, 
                   suggestionsCallback: (pattern){
-                    return gradeController.allItems.where((grade) => grade.name.contains(pattern)).toList();
+                    return gradeController.allItems
+                    .where((grade) => grade.name.contains(pattern)).toList();
                   }
                 )
           )

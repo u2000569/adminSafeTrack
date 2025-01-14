@@ -17,13 +17,13 @@ class EditStudentBottomNavButtons extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           // Discard Button
-          OutlinedButton(
-            onPressed: (){
-            // Add functionality to discard changes if needed
-            },
-            child: const Text('Discard'),
-          ),
-          const SizedBox(width: SSizes.spaceBtwItems / 2),
+          // OutlinedButton(
+          //   onPressed: (){
+          //   // Add functionality to discard changes if needed
+          //   },
+          //   child: const Text('Discard'),
+          // ),
+          // const SizedBox(width: SSizes.spaceBtwItems / 2),
 
           // Save changes button
           SizedBox(

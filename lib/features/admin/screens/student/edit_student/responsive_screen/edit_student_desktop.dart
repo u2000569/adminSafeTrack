@@ -57,7 +57,8 @@ class EditStudentDesktopScreen extends StatelessWidget {
                         // Student Grade
                         EditStudentGrade(),
                         SizedBox(height: SSizes.spaceBtwSections),
-                        StudentParent(),
+                        EditStudentParent(),
+                        
                         
                       ],
                     ),

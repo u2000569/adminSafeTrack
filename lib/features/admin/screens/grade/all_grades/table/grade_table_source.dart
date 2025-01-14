@@ -46,28 +46,31 @@ class GradeRows extends DataTableSource {
           )
         ),
         // Categories
-        DataCell(
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: SSizes.sm),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Wrap(
-                spacing: SSizes.xs,
-                direction: SDeviceUtils.isMobileScreen(Get.context!) ? Axis.vertical : Axis.horizontal,
-                children: grade.gradeCategories != null
-                    ? grade.gradeCategories!
-                      .map((e) => Padding(
-                        padding:  EdgeInsets.only(bottom: SDeviceUtils.isMobileScreen(Get.context!) ? 0 : SSizes.xs),
-                        child: Chip(label: Text(e.name), padding: const EdgeInsets.all(SSizes.xs)),
-                      ))
-                      .toList(): [const SizedBox()],
-              ),
-            ),
-          )
-        ),
-          DataCell(STableActionButtons(
+        // DataCell(
+        //   Padding(
+        //     padding: const EdgeInsets.symmetric(vertical: SSizes.sm),
+        //     child: SingleChildScrollView(
+        //       scrollDirection: Axis.vertical,
+        //       child: Wrap(
+        //         spacing: SSizes.xs,
+        //         direction: SDeviceUtils.isMobileScreen(Get.context!) ? Axis.vertical : Axis.horizontal,
+        //         children: grade.gradeCategories != null
+        //             ? grade.gradeCategories!
+        //               .map((e) => Padding(
+        //                 padding:  EdgeInsets.only(bottom: SDeviceUtils.isMobileScreen(Get.context!) ? 0 : SSizes.xs),
+        //                 child: Chip(label: Text(e.name), padding: const EdgeInsets.all(SSizes.xs)),
+        //               ))
+        //               .toList(): [const SizedBox()],
+        //       ),
+        //     ),
+        //   )
+        // ),
+          DataCell(
+            STableActionButtons(
+              view: false,
+              edit: false,
             //onEditPressed: () => Get.toNamed(SRoutes.editGrade, arguments: grade),
-            onDeletePressed: () => controller.confirmAndDeleteItem(grade),
+            onDeletePressed: () => controller.confirmAndDeleteGrade(grade),
           )
         )
       ]

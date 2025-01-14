@@ -32,7 +32,8 @@ class ParentRepository extends GetxController {
   Future<List<UserModel>> getAllParent() async{
     try {
       final parentSnapshot = await _db.collection('Parent').get();
-      return parentSnapshot.docs.map((e) => UserModel.fromSnapshot(e)).toList();
+      final result = parentSnapshot.docs.map((e) => UserModel.fromSnapshot(e)).toList();
+      return result;
     } on FirebaseAuthException catch (e) {
       throw SFirebaseAuthException(e.code).message;
     } on FormatException catch (_) {

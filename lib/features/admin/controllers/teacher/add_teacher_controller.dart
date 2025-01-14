@@ -7,11 +7,10 @@ import 'package:adminpickready/utils/constants/sizes.dart';
 import 'package:adminpickready/utils/helpers/network_manager.dart';
 import 'package:adminpickready/utils/popups/full_screen_loader.dart';
 import 'package:adminpickready/utils/popups/loaders.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../../data/repositories/user/user_repository.dart';
-import '../../../../routes/routes.dart';
 import '../../../../utils/logging/logger.dart';
 import '../../../authentication/controllers/login_contoller.dart';
 
@@ -54,17 +53,13 @@ class AddTeacherController extends GetxController {
       }
 
       // Validate title and description form
-
-      // Upload Teacher Thumbnail Image
-
-      // // Map Student Data to UserModel
-      // final newRecord = UserModel(
-      //   email: teacherEmail.text.trim(),
-      // );
-
-      // // Call Repo to Add new teacher
-      // teacherDataUploader.value = true;
-      // newRecord.id = await TeacherRepository.instance;
+      if(!teacherDescriptionFormKey.currentState!.validate()){
+        SLoggerHelper.warning('Validation Error , ${teacherDescriptionFormKey.currentState}');
+        // teacherDescriptionFormKey.currentState?.reset();
+        SFullScreenLoader.stopLoading();
+        return;
+      }
+      
 
       // Register Teacher account using email and password
       await AuthenticationRepository.instance.registerWithEmailAndPassword(teacherEmail.text, teacherPassword.text);
@@ -95,13 +90,17 @@ class AddTeacherController extends GetxController {
           )
       );
 
+      await AuthenticationRepository.instance.sendPasswordResetEmail(teacherEmail.text.trim());
+      SLoggerHelper.info('Send Password Reset Email to $teacherEmail');
+
       await AuthenticationRepository.instance.logoutAdmin();
 
       await AuthenticationRepository.instance.loginWithEmailAndPassword(adminEmail, adminPassword);
 
       SFullScreenLoader.stopLoading();
+      showCompletionDialog();
       // Redirect
-      Get.offAllNamed(SRoutes.dashboard);
+      // Get.offAllNamed(SRoutes.dashboard);
     } catch (e) {
       SFullScreenLoader.stopLoading();
       SLoaders.errorSnackBar(title: 'Oh Snap, cannot create Teacher Account', message: e.toString());
@@ -121,8 +120,7 @@ class AddTeacherController extends GetxController {
               children: [
                 Image.asset(SImages.creatingProductIllustration, height: 200, width: 200,),
                 const SizedBox(height: SSizes.spaceBtwItems,),
-                // buildCheckbox('Thumbnail Image', thumbnailUploader),
-                // buildCheckbox('Student Data', studentDataUploader),
+                buildCheckbox('Teacher Data', teacherDataUploader),
                 const SizedBox(height: SSizes.spaceBtwItems),
                 const Text('Sit Tight, new teacher data is uploading...')
               ],
@@ -132,4 +130,48 @@ class AddTeacherController extends GetxController {
       )
     );
   }
+
+  // Build a checkbox widget
+  Widget buildCheckbox(String label, RxBool value){
+    return Row(
+      children: [
+        AnimatedSwitcher(
+          duration: const Duration(seconds: 2),
+          child: value.value
+          ? const Icon(CupertinoIcons.checkmark_alt_circle_fill, color: Colors.blue)
+          : const Icon(CupertinoIcons.checkmark_alt_circle),
+        ),
+        const SizedBox(width: SSizes.spaceBtwItems,),
+        Text(label),
+      ],
+    );
+  }
+
+  void showCompletionDialog(){
+    Get.dialog(
+      AlertDialog(
+        title: const Text('Congratulations'),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Get.back();
+                Get.back();
+              },
+              child: const Text('Go to Teachers'))
+        ],
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(SImages.productsIllustration, height: 200, width: 200),
+            const SizedBox(height: SSizes.spaceBtwItems),
+            Text('Congratulations', style: Theme.of(Get.context!).textTheme.headlineSmall),
+            const SizedBox(height: SSizes.spaceBtwItems),
+            const Text('New Teacher Data has been Created'),
+          ],
+        ),
+      ),
+    );
+  }
+
+
 }

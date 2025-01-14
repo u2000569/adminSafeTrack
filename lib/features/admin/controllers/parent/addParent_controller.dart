@@ -4,6 +4,7 @@ import 'package:adminpickready/features/personalization/models/user_model.dart';
 import 'package:adminpickready/utils/constants/enums.dart';
 import 'package:adminpickready/utils/logging/logger.dart';
 import 'package:adminpickready/utils/popups/loaders.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -46,6 +47,13 @@ class AddParentController extends GetxController {
         return;
       }
 
+      // validation form
+      if(!parentDescriptionFormKey.currentState!.validate()){
+        SLoggerHelper.warning('Validation Error , ${parentDescriptionFormKey.currentState}');
+        SFullScreenLoader.stopLoading();
+        return;
+      }
+
       await AuthenticationRepository.instance.registerWithEmailAndPassword(parentEmail.text, parentPassword.text);
 
       final teacherRepository = Get.put(ParentRepository());
@@ -72,14 +80,19 @@ class AddParentController extends GetxController {
           )
       );
 
+      await AuthenticationRepository.instance.sendPasswordResetEmail(parentEmail.text.trim());
+      SLoggerHelper.info('Send Password Reset Email to $parentEmail');
+
       //logout the new user
       await AuthenticationRepository.instance.logoutAdmin();
 
       await AuthenticationRepository.instance.loginWithEmailAndPassword(adminEmail, adminPassword);
       SFullScreenLoader.stopLoading();
+
+      showCompletionDialog();
       // SLoggerHelper.info('User created with UID: ${userRepository.createUser(UserModel(email: email))}');
       // Redirect 
-      Get.offAllNamed(SRoutes.dashboard);
+      // Get.offAllNamed(SRoutes.dashboard);
     } catch (e){
       SFullScreenLoader.stopLoading();
       SLoaders.errorSnackBar(title: 'Oh snap, Fail to create parent account', message: e.toString());
@@ -99,7 +112,7 @@ class AddParentController extends GetxController {
               children: [
                 Image.asset(SImages.creatingProductIllustration, height: 200, width: 200,),
                 const SizedBox(height: SSizes.spaceBtwItems,),
-                // buildCheckbox('Thumbnail Image', thumbnailUploader),
+                buildCheckbox('Teacher Data', parentDataUploader),
                 // buildCheckbox('Student Data', studentDataUploader),
                 const SizedBox(height: SSizes.spaceBtwItems),
                 const Text('Wait, new parent data is uploading...')
@@ -108,6 +121,48 @@ class AddParentController extends GetxController {
           ),
         )
       )
+    );
+  }
+
+  // Build a checkbox widget
+  Widget buildCheckbox(String label, RxBool value){
+    return Row(
+      children: [
+        AnimatedSwitcher(
+          duration: const Duration(seconds: 2),
+          child: value.value
+          ? const Icon(CupertinoIcons.checkmark_alt_circle_fill, color: Colors.blue)
+          : const Icon(CupertinoIcons.checkmark_alt_circle),
+        ),
+        const SizedBox(width: SSizes.spaceBtwItems,),
+        Text(label),
+      ],
+    );
+  }
+
+  void showCompletionDialog(){
+    Get.dialog(
+      AlertDialog(
+        title: const Text('Congratulations'),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Get.back();
+                Get.back();
+              },
+              child: const Text('Go to Parent'))
+        ],
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(SImages.productsIllustration, height: 200, width: 200),
+            const SizedBox(height: SSizes.spaceBtwItems),
+            Text('Congratulations', style: Theme.of(Get.context!).textTheme.headlineSmall),
+            const SizedBox(height: SSizes.spaceBtwItems),
+            const Text('New Parent Data has been Created'),
+          ],
+        ),
+      ),
     );
   }
 }

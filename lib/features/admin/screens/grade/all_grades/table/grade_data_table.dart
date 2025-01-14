@@ -33,7 +33,7 @@ class GradeDataTable extends StatelessWidget {
               // fixedWidth: SDeviceUtils.isMobileScreen(Get.context!) ? null : 200,
               onSort: (columnIndex, ascending) => controller.sortByName(columnIndex, ascending)
             ),
-            const DataColumn2(label: Text('Categories')),
+            // const DataColumn2(label: Text('Categories')),
             const DataColumn2(label: Text('Action')),
           ]
         );

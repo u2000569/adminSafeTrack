@@ -7,6 +7,7 @@ import 'package:adminpickready/utils/constants/enums.dart';
 import 'package:adminpickready/utils/constants/image_strings.dart';
 import 'package:adminpickready/utils/constants/sizes.dart';
 import 'package:adminpickready/utils/helpers/network_manager.dart';
+import 'package:adminpickready/utils/logging/logger.dart';
 import 'package:adminpickready/utils/popups/full_screen_loader.dart';
 import 'package:adminpickready/utils/popups/loaders.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,6 +36,7 @@ class AddStudentController extends GetxController {
   TextEditingController totalStudent = TextEditingController();
   TextEditingController description= TextEditingController();
   TextEditingController gradeTextField= TextEditingController();
+  TextEditingController parentTextField= TextEditingController();
 
   // Rx observables for selected grade and categories
   final Rx<GradeModel?> selectGrade = Rx<GradeModel?>(null);
@@ -58,9 +60,13 @@ class AddStudentController extends GetxController {
       }
 
       // Validate title and description form
+      if(studentName.text.isEmpty) throw 'Enter Student Name';
 
       // Ensure a grade is selected
       if (selectGrade.value == null) throw 'Select Grade for this Student';
+
+      if(selectParent.value == null) throw 'Select Parent for this Student';
+
 
       // Check variation data if StudentType = variable
       
@@ -83,12 +89,19 @@ class AddStudentController extends GetxController {
         thumbnail: imagesController.selectedThumbnailImageUrl.value ?? '', 
         name: studentName.text.trim(),
         grade: selectGrade.value,
-        parent: selectParent.value
+        parent: selectParent.value,
+        totalAmount: 0
       );
 
+      final parentId = selectParent.value!.id;
+      final parentName = selectParent.value!.fullName;
+      SLoggerHelper.info('Identify $parentName ID: $parentId');
+      final studentDocId = newRecord.id;
+      SLoggerHelper.info('Identify Student ID: $studentDocId');
       // Call Repository to Add New Student
       studentDataUploader.value = true;
-      newRecord.id = await StudentRepository.instance.addStudent(newRecord);
+      await StudentRepository.instance.addStudent(newRecord);
+      await StudentRepository.instance.addChildToParent(parentId!, studentDocId);
 
       // Register student categories if any
 
@@ -106,6 +119,15 @@ class AddStudentController extends GetxController {
     } catch (e) {
       SFullScreenLoader.stopLoading();
       SLoaders.errorSnackBar(title: 'Oh Snap' , message: e.toString());
+    }
+  }
+
+  /*---------------- Add Children to Parent Collection ----------------*/
+  Future<void> addChildToParent(String parentId, String studentId) async{
+    try {
+      
+    } catch (e) {
+      
     }
   }
 

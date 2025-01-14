@@ -49,9 +49,9 @@ class TeacherRows extends DataTableSource {
         // DataCell(Text(teacher.createdAt == null ? '' : teacher.formattedDate)),
         DataCell(
           STableActionButtons(
-            view: true,
+            view: false,
             edit: false,
-            onViewPressed: () => Get.toNamed(SRoutes.teacher, arguments: teacher),
+            // onViewPressed: () => Get.toNamed(SRoutes.teacher, arguments: teacher),
             onDeletePressed: () => controller.confirmAndDeleteItem(teacher),
           )
         )

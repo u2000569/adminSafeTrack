@@ -50,9 +50,9 @@ class ParentRows extends DataTableSource {
         // DataCell(Text(parent.createdAt == null ? '' : parent.formattedDate)),
         DataCell(
           STableActionButtons(
-            view: true,
+            view: false,
             edit: false,
-            onViewPressed: () => Get.toNamed(SRoutes.parent, arguments: parent),
+            // onViewPressed: () => Get.toNamed(SRoutes.parent, arguments: parent),
             onDeletePressed: () => controller.confirmAndDeleteItem(parent),
           )
         )

@@ -1,10 +1,9 @@
 import 'dart:io';
-
 import 'package:adminpickready/features/admin/models/grade_category_model.dart';
+import 'package:adminpickready/utils/logging/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
 import '../../../features/admin/models/grade_model.dart';
 import '../../../utils/exceptions/firebase_exceptions.dart';
 import '../../../utils/exceptions/format_exceptions.dart';
@@ -24,13 +23,13 @@ class GradeRepository extends GetxController {
       final result = snapshot.docs.map((e) => GradeModel.fromSnapshot(e)).toList();
       return result;
     }on FirebaseException catch (e) {
-      print('FirebaseException in getAllGrade: ${e.message}');
+      SLoggerHelper.error('FirebaseException in getAllGrade: ${e.message}');
       throw e.message!;
     } on SocketException catch (e){
-      print('SocketException in getAllGrade: ${e.message}');
+      SLoggerHelper.error('SocketException in getAllGrade: ${e.message}');
       throw e.message;
     } on PlatformException catch(e){
-      print('PlatformException error in getAllGrade: $e');
+      SLoggerHelper.error('PlatformException error in getAllGrade: $e');
       throw e.message!;
     }catch (e) {
       throw 'Unexpected error in getAllGrade.';

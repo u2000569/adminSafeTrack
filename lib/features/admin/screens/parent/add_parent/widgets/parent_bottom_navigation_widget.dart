@@ -14,7 +14,9 @@ class ParentBottomNavigationButtons extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           // Discard Button
-          OutlinedButton(onPressed: (){}, child: const Text('Discard')),
+          OutlinedButton(onPressed: (){
+            _discardChanges(context);
+          }, child: const Text('Discard')),
 
           const SizedBox(width: SSizes.spaceBtwItems / 2),
 
@@ -29,5 +31,47 @@ class ParentBottomNavigationButtons extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _discardChanges(BuildContext context){
+    final controller = AddParentController.instance;
+
+    bool hasUnsavedChanges = 
+      controller.parentFirstName.text.isNotEmpty ||
+      controller.parentLastName.text.isNotEmpty ||
+      controller.parentPhoneNumber.text.isNotEmpty ||
+      controller.parentEmail.text.isNotEmpty ||
+      controller.parentPassword.text.isNotEmpty;
+
+      if (hasUnsavedChanges) {
+        showDialog(
+          context: context, 
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Discard Changes'),
+              content: const Text('Are you sure you want to discard changes?'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    controller.parentFirstName.clear();
+                    controller.parentLastName.clear();
+                    controller.parentPhoneNumber.clear();
+                    controller.parentEmail.clear();
+                    controller.parentPassword.clear();
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Discard'),
+                )
+              ],
+            );
+          }
+        );
+      } else{
+        Navigator.pop(context);
+      }
   }
 }

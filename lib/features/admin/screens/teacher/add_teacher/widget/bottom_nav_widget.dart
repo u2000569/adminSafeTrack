@@ -15,7 +15,7 @@ class TeacherBottomNavigationButtons extends StatelessWidget {
           // Discard Button
           OutlinedButton(
             onPressed: (){
-            // Add functionality to discard changes if needed
+            _discardChanges(context);
             },
             child: const Text('Discard'),
           ),
@@ -33,5 +33,47 @@ class TeacherBottomNavigationButtons extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _discardChanges(BuildContext context){
+    final controller = AddTeacherController.instance;
+
+    bool hasUnsavedChanges = 
+      controller.teacherFirstName.text.isNotEmpty ||
+      controller.teacherLastName.text.isNotEmpty ||
+      controller.teacherPhoneNumber.text.isNotEmpty ||
+      controller.teacherEmail.text.isNotEmpty ||
+      controller.teacherPassword.text.isNotEmpty;
+
+      if (hasUnsavedChanges) {
+        showDialog(
+          context: context, 
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Discard Changes'),
+              content: const Text('Are you sure you want to discard changes?'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    controller.teacherFirstName.clear();
+                    controller.teacherLastName.clear();
+                    controller.teacherPhoneNumber.clear();
+                    controller.teacherEmail.clear();
+                    controller.teacherPassword.clear();
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Discard'),
+                )
+              ],
+            );
+          }
+        );
+      } else{
+        Navigator.pop(context);
+      }
   }
 }

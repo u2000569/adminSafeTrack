@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:adminpickready/common/widgets/shimmers/shimmer.dart';
 import 'package:adminpickready/utils/constants/sizes.dart';
+import 'package:adminpickready/utils/logging/logger.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
@@ -58,7 +59,7 @@ class SRoundedImage extends StatelessWidget {
 
     switch (imageType) {
       case ImageType.network:
-        imageWidget = _buildNetworkImage();
+        imageWidget = _buildFirebaseImage();
         break;
       case ImageType.memory:
         imageWidget = _buildMemoryImage();
@@ -80,19 +81,39 @@ class SRoundedImage extends StatelessWidget {
   
   // Function to build the network image widget
   Widget _buildNetworkImage() {
-    if (image != null) {
+    if (image != null && image!.isNotEmpty) {
       // Use CachedNetworkImage for efficient loading and caching of network images // Not working in Web but just for loading
       return CachedNetworkImage(
         fit: fit,
         color: overlayColor,
         imageUrl: image!,
-        errorWidget: (context, url, error) => const Icon(Iconsax.image),
-        progressIndicatorBuilder: (context, url, downloadProgress) => SShimmer(width: width, height: height),
+        errorWidget: (context, url, error) {
+          SLoggerHelper.warning('Failed to load image: $url, Error: $error');
+          return const Icon(Iconsax.image);
+        } ,
+        progressIndicatorBuilder: (context, url, downloadProgress) => 
+          SShimmer(width: width, height: height),
       );
     } else {
       // Return an empty container if no image is provided
-      return Container();
+      // return Container();
+      return const Icon(Iconsax.gallery, size: 24);
     }
+  }
+
+  Widget _buildFirebaseImage(){
+    if (image != null && image!.isNotEmpty) {
+    return Image.network(
+      image!,
+      fit: fit,
+      errorBuilder: (context, error, stackTrace) {
+        debugPrint('Failed to load image: $image, Error: $error');
+        return const Icon(Iconsax.image); // Use an error icon
+      },
+    );
+  } else {
+    return const Icon(Iconsax.gallery, size: 24); // Fallback for missing URLs
+  }
   }
   
   // Function to build the memory image widget

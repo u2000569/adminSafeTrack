@@ -8,6 +8,7 @@ import 'package:adminpickready/utils/constants/enums.dart';
 import 'package:adminpickready/utils/constants/image_strings.dart';
 import 'package:adminpickready/utils/constants/sizes.dart';
 import 'package:adminpickready/utils/helpers/helper_functions.dart';
+import 'package:adminpickready/utils/logging/logger.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,6 +19,8 @@ class StudentsRows extends DataTableSource {
   @override
   DataRow? getRow(int index){
     final student = controller.filteredItems[index];
+    SLoggerHelper.info('Student Thumbnail: ${student.thumbnail}');
+    // final student = controller.filteredItem[index]; // refer to studentController.dart
     return DataRow2(
       selected: controller.selectedRows[index],
       onTap: () => Get.toNamed(SRoutes.editStudent, arguments: student),
@@ -30,8 +33,8 @@ class StudentsRows extends DataTableSource {
                 width: 50,
                 height: 50,
                 padding: SSizes.xs,
-                image: student.thumbnail,
-                imageType: ImageType.network,
+                image: student.thumbnail ?? SImages.defaultImage,
+                imageType: student.thumbnail != null ? ImageType.network : ImageType.asset,
                 borderRadius: SSizes.borderRadiusMd,
                 backgroundColor: SColors.primaryBackground,
               ),
@@ -52,16 +55,16 @@ class StudentsRows extends DataTableSource {
         DataCell(
           Row(
             children: [
-              SRoundedImage(
-                width: 35,
-                height: 35,
-                padding: SSizes.xs,
-                borderRadius: SSizes.borderRadiusMd,
-                backgroundColor: SColors.primaryBackground,
-                imageType: student.grade != null ? ImageType.network : ImageType.asset,
-                image: student.grade != null ? student.grade!.image : SImages.defaultImage,
-              ),
-              const SizedBox(width: SSizes.spaceBtwItems),
+              // SRoundedImage(
+              //   width: 35,
+              //   height: 35,
+              //   padding: SSizes.xs,
+              //   borderRadius: SSizes.borderRadiusMd,
+              //   backgroundColor: SColors.primaryBackground,
+              //   imageType: student.grade != null ? ImageType.network : ImageType.asset,
+              //   image: student.grade != null ? student.grade!.image : SImages.defaultImage,
+              // ),
+              // const SizedBox(width: SSizes.spaceBtwItems),
               Flexible(
                 child: Text(
                   // student.grade != null ? student.grade!.name : '',
@@ -82,11 +85,13 @@ class StudentsRows extends DataTableSource {
             ),
           )
         ),
-        DataCell(Text(student.formattedAttendanceDate)),
-        DataCell(STableActionButtons(
-            view: true,
-            edit: false,
-            onViewPressed: () => Get.toNamed(SRoutes.studentDetail, arguments: student),
+        // DataCell(Text(student.formattedAttendanceDate)),
+        DataCell(
+          STableActionButtons(
+            view: false,
+            edit: true,
+            // onViewPressed: () => Get.toNamed(SRoutes.studentDetail, arguments: student),
+            onEditPressed: () => Get.toNamed(SRoutes.editStudent, arguments: student),            
             onDeletePressed: () => controller.confirmAndDeleteItem(student),
           )
         )

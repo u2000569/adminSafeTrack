@@ -1,3 +1,4 @@
+import 'package:adminpickready/data/repositories/user/user_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -126,6 +127,23 @@ Future<UserCredential> loginWithEmailAndPassword(String email, String password) 
       throw SPlatformException(e.code).message;
     } catch (e) {
       if (kDebugMode) print(e);
+      throw 'Something went wrong. Please try again';
+    }
+  }
+
+  Future<void> sendPasswordResetEmail(email) async{
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      SLoggerHelper.info('Send Password Reset Email to: $email');
+    }on FirebaseAuthException catch (e) {
+      throw SFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw SFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw const SFormatException();
+    } on PlatformException catch (e) {
+      throw SPlatformException(e.code).message; 
+    }catch (e) {
       throw 'Something went wrong. Please try again';
     }
   }

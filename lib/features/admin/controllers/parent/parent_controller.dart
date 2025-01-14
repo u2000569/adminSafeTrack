@@ -1,4 +1,5 @@
 import 'package:adminpickready/data/abstract/base_data_table_controller.dart';
+import 'package:adminpickready/utils/logging/logger.dart';
 import 'package:get/get.dart';
 
 import '../../../../data/repositories/parent/parent_repository.dart';
@@ -11,8 +12,19 @@ class ParentController extends SBaseController<UserModel> {
 
   @override 
   Future<List<UserModel>> fetchItems() async{
-    // Fetch parent
-    return await _parentRepository.getAllParent();
+    try {
+      // Fetch parent
+    final fetcParent = await _parentRepository.getAllParent();
+    SLoggerHelper.info('Fetch Parent: $fetcParent'); // Log to verify data
+
+    for(var parent in fetcParent){
+      SLoggerHelper.info('Parent: ${parent.id}, ${parent.fullName}');
+    }
+    return fetcParent;
+    } catch (e) {
+      SLoggerHelper.error('Error in fetchParent: $e');
+      rethrow; // Rethrow to let `fetchData` handle it
+    }
   }
 
   void sortByName(int sortColumnIndex, bool ascending) {

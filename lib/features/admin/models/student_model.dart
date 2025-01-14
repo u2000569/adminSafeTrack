@@ -17,6 +17,7 @@ class StudentModel{
   String name; // same as title product
   GradeModel? grade;
   UserModel? parent;
+  final double totalAmount;
 
   StudentModel({
     required this.id,
@@ -29,6 +30,7 @@ class StudentModel{
     required this.name,
     this.grade,
     this.parent,
+    required this.totalAmount,
   });
 
   String get fullName => '$name ';
@@ -48,7 +50,8 @@ class StudentModel{
     status: StudentStatus.pending,
     thumbnail: '',
     name: '',
-    email: ''
+    email: '',
+    totalAmount: 1
     );
 
   Map<String, dynamic> toJson(){
@@ -61,6 +64,7 @@ class StudentModel{
       'name' : name,
       'Grade': grade != null ? grade!.toJson() : null,
       'Parent': parent != null ? parent!.toJson() : null,
+      'totalAmount': totalAmount
     };
   }
 
@@ -86,6 +90,7 @@ class StudentModel{
       name: data['name'] ?? '',
       grade: data.containsKey('Grade') && data['Grade'] != null ? GradeModel.fromJson(data['Grade']) : null,
       parent: data.containsKey('Parent') && data['Parent'] != null ? UserModel.fromJson(data['Parent']) : null,
+      totalAmount: data.containsKey('totalAmount') ? data['totalAmount'] as double : 0.0
 
     );
   }

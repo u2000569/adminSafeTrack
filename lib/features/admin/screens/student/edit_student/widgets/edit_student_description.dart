@@ -14,7 +14,7 @@ class EditStudentDescription extends StatelessWidget {
     final controller = Get.put(EditStudentController());
     return SRoundedContainer(
       child: Form(
-        key: controller.studentDescriptionFormKey,
+        // key: controller.studentDescriptionFormKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

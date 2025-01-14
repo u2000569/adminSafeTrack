@@ -18,7 +18,7 @@ class SDashboardCard extends StatelessWidget {
     this.color = SColors.success, 
     required this.headingIconColor, 
     required this.headingIconBgColor, 
-    required this.stats, 
+    // required this.stats, 
     this.onTap
   });
 
@@ -26,7 +26,7 @@ class SDashboardCard extends StatelessWidget {
   final String title, subTitle;
   final IconData icon, headingIcon;
   final Color color, headingIconColor, headingIconBgColor;
-  final int stats;
+  // final int stats;
   final void Function()? onTap;
 
   @override
@@ -58,30 +58,30 @@ class SDashboardCard extends StatelessWidget {
               ),
 
               /// Right Side Stats
-              Column(
+              const Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  /// Indicator
-                  SizedBox(
-                    child: Row(
-                      children: [
-                        Icon(icon, color: color, size: SSizes.iconSm,),
-                        Text(
-                          '$stats',
-                          style: Theme.of(context).textTheme.titleLarge!.apply(color: color, overflow: TextOverflow.ellipsis),
-                        )
-                        ],
-                    ),
-                  ),
-                  SizedBox(
-                    width: 135,
-                    child: Text(
-                      'On December 2024',
-                      style: Theme.of(context).textTheme.labelMedium,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  )
-                ],
+                // children: [
+                //   /// Indicator
+                //   SizedBox(
+                //     child: Row(
+                //       children: [
+                //         Icon(icon, color: color, size: SSizes.iconSm,),
+                //         Text(
+                //           '$stats',
+                //           style: Theme.of(context).textTheme.titleLarge!.apply(color: color, overflow: TextOverflow.ellipsis),
+                //         )
+                //         ],
+                //     ),
+                //   ),
+                //   SizedBox(
+                //     width: 135,
+                //     child: Text(
+                //       'On December 2024',
+                //       style: Theme.of(context).textTheme.labelMedium,
+                //       overflow: TextOverflow.ellipsis,
+                //     ),
+                //   )
+                // ],
               )
             ]
           )

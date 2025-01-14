@@ -50,6 +50,8 @@ class SPaginatedDataTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final isDataEmpty = source.rowCount == 0;
     return SizedBox(
       // Set the dynamic height of the PaginatedDataTable
       height: tableHeight,
@@ -65,21 +67,27 @@ class SPaginatedDataTable extends StatelessWidget {
           minWidth: minWidth,
           dividerThickness: 0,
           horizontalMargin: 12,
-          rowsPerPage: rowsPerPage,
+          rowsPerPage: isDataEmpty ? 0 : rowsPerPage,
           dataRowHeight: dataRowHeight,
 
           /// CHECKBOX
-          showCheckboxColumn: true,
+          showCheckboxColumn: false,
 
           /// PAGINATION
           showFirstLastButtons: true,
-          onPageChanged: onPageChanged,
+          onPageChanged: (page){
+            if(onPageChanged != null && !isDataEmpty){
+              onPageChanged!(page);
+            }
+          },
           renderEmptyRowsInTheEnd: false,
           onRowsPerPageChanged: (noOfRows) {},
 
           /// HEADER DESIGN
           headingTextStyle: Theme.of(context).textTheme.titleMedium,
-          headingRowColor: MaterialStateProperty.resolveWith((states) => SColors.primaryBackground),
+          headingRowColor: MaterialStateProperty.resolveWith(
+            (states) => SColors.primaryBackground
+          ),
           headingRowDecoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(SSizes.borderRadiusMd),

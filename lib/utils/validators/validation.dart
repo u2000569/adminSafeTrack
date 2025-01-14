@@ -76,7 +76,7 @@ class SValidator {
     }
 
     // Check for special characters
-    if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+    if (!value.contains(RegExp(r'[~_!@#$%^&*(),.?":{}|<>]'))) {
       return 'Password must contain at least one special character.';
     }
 
@@ -89,11 +89,11 @@ class SValidator {
       return 'Phone number is required.';
     }
 
-    // Regular expression for phone number validation (assuming a 10-digit US phone number format)
-    final phoneRegExp = RegExp(r'^\d{12}$');
+    // Regular expression for phone number validation (assuming a 8-digit US phone number format)
+    final phoneRegExp = RegExp(r'^\d{8,}$');
 
     if (!phoneRegExp.hasMatch(value)) {
-      return 'Invalid phone number format (12 digits required).';
+      return 'Invalid phone number format (minimum 8 digits required).';
     }
 
     return null;

@@ -9,8 +9,8 @@ import 'package:iconsax/iconsax.dart';
 import '../../../../../../common/widgets/containers/rounded_container.dart';
 import '../../../../../../utils/constants/sizes.dart';
 
-class StudentParent extends StatelessWidget {
-  const StudentParent({super.key});
+class EditStudentParent extends StatelessWidget {
+  const EditStudentParent({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class StudentParent extends StatelessWidget {
           Text('Parent', style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: SSizes.spaceBtwItems),
 
-          // TypeAheadField for brand selection
+          // TypeAheadField for parent selection
           Obx(
             () => parentController.isLoading.value
                 ? const SShimmer(width: double.infinity, height: 50)
@@ -48,8 +48,9 @@ class StudentParent extends StatelessWidget {
                       );
                     },
                     suggestionsCallback: (pattern) {
-                      // Return filtered brand suggestions based on the search pattern
-                      return parentController.allItems.where((parent) => parent.fullName.contains(pattern)).toList();
+                      // Return filtered parent suggestions based on the search pattern
+                      return parentController.allItems
+                      .where((parent) => parent.fullName.contains(pattern)).toList();
                     },
                     itemBuilder: (context, suggestion) {
                       return ListTile(

@@ -33,7 +33,7 @@ class StudentsTable extends StatelessWidget {
             const DataColumn2(label: Text('Student ID')),
             const DataColumn2(label: Text('Student Grade')),
             const DataColumn2(label: Text('Student Status')),
-            const DataColumn2(label: Text('Date')),
+            // const DataColumn2(label: Text('Date')),
             const DataColumn2(label: Text('Action'), fixedWidth: 100),
           ],
           source: StudentsRows(),

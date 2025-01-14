@@ -72,7 +72,7 @@ class SSidebar extends StatelessWidget {
                     Text('OTHER', style: Theme.of(context).textTheme.bodySmall!.apply(letterSpacingDelta: 1.2)),
                     // Other menu items
                     const SMenuItem(route: SRoutes.profile, icon: Iconsax.user, itemName: 'Profile'),
-                    const SMenuItem(route: SRoutes.settings, icon: Iconsax.setting_2, itemName: 'Settings'),
+                    // const SMenuItem(route: SRoutes.settings, icon: Iconsax.setting_2, itemName: 'Settings'),
                     const SMenuItem(route: 'logout', icon: Iconsax.logout, itemName: 'Logout'),
                   ],
                 ),

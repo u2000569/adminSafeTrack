@@ -2,6 +2,7 @@ import 'package:adminpickready/features/admin/models/student_model.dart';
 import 'package:adminpickready/utils/exceptions/firebase_exceptions.dart';
 import 'package:adminpickready/utils/exceptions/format_exceptions.dart';
 import 'package:adminpickready/utils/exceptions/platform_exceptions.dart';
+import 'package:adminpickready/utils/logging/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -38,6 +39,7 @@ class StudentRepository extends GetxController {
     try {
       // await _db.collection('Students').add(order.toJson());
       final result = await _db.collection('Students').add(student.toJson());
+      SLoggerHelper.info('Student ID added: ${result.id}');
       return result.id;
     } on FirebaseException catch (e) {
       throw SFirebaseException(e.code).message;
@@ -50,10 +52,23 @@ class StudentRepository extends GetxController {
     }
   }
 
+  Future<void> addChildToParent(String parentId, String studentId) async{
+    try {
+      final parent = await _db.collection('Parent').doc(parentId).collection('Children').doc(parentId).set({
+        'Children': FieldValue.arrayUnion([studentId])
+      });
+      SLoggerHelper.info('Added Student to Parent: $parentId');
+      return parent;
+    } catch (e) {
+      SLoggerHelper.error('Error adding Student to Parent: $e');
+    }
+  }
+
   // Update student info
   Future<void> updateStudent(StudentModel student) async{
     try {
       await _db.collection('Students').doc(student.docId).update(student.toJson());
+      SLoggerHelper.info('Updated Student: ${student.docId}');
     } on FirebaseException catch (e) {
       throw SFirebaseException(e.code).message;
     } on FormatException catch (_) {

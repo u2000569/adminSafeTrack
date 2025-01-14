@@ -1,5 +1,6 @@
 import 'package:adminpickready/data/abstract/base_data_table_controller.dart';
 import 'package:adminpickready/features/admin/models/grade_model.dart';
+import 'package:adminpickready/utils/logging/logger.dart';
 import 'package:get/get.dart';
 
 import '../../../../data/repositories/grades/grade_repository.dart';
@@ -16,10 +17,10 @@ class GradeController extends SBaseController<GradeModel> {
     try {
       // Fetch grade
     final fetchedGrades = await _gradeRepository.getAllGrade();
-    print('Fetched Grades: $fetchedGrades'); // Log to verify data
+    SLoggerHelper.info('Fetched Grades: $fetchedGrades'); // Log to verify data
 
     for (var grade in fetchedGrades) {
-      print('Grades: ${grade.id}, ${grade.name}');
+      SLoggerHelper.info('Grades: ${grade.id}, ${grade.name}');
     }
 
     // Fetch Grade Categories Relational Data
